@@ -46,7 +46,7 @@ function loadCameraWH(w, h, hide) {
     var mv = document.getElementById("v");
     mv.muted = true;
     if (hide == true) videoInput.hide();
-    // return(videoInput);
+    return(videoInput);
 }
 
 /*

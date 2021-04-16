@@ -1,9 +1,12 @@
 var eyeImage, noseImage, mouthImage;
 var myCamera;
+var showPoints = false;
+var showElements = true;
+var showImage = false;
 
 function setup() {
     // myCamera = loadCamera(windowWidth, windowHeight, false);
-    loadCameraWH(windowWidth, windowHeight, true);
+    myCamera = loadCameraWH(windowWidth, windowHeight, true);
     //camera.hide();
     loadTracker();
     //createCanvas(windowWidth, windowHeight);
@@ -17,8 +20,10 @@ function setup() {
 function draw() {
     getPositions();
     clear();
-    drawElements();
-    drawPoints();
+    if (showElements == true) drawElements();
+    if (showPoints == true) drawPoints();
+    if (showImage == true) myCamera.show();
+    if (showImage == false) myCamera.hide();
 }
 
 function drawElements() {
@@ -83,10 +88,24 @@ function drawPoints() {
         
         // draw ellipse
         noStroke();
-        ellipse(positions[i][0], positions[i][1], 4, 4);
+        ellipse(positions[i][0], positions[i][1], 10, 10);
         
         // draw line
         stroke(map(positions[i][0], width*0.33, width*0.66, 0, 255), map(positions[i][1], height*0.33, height*0.66, 0, 100), 0,50);
+        // stroke(255);
         line(positions[i][0], positions[i][1], positions[i+1][0], positions[i+1][1]);
     }
 }
+
+
+function keyPressed() {
+    if (keyCode === 80) {
+        showPoints = !showPoints;
+    } else if (keyCode === 69) {
+        showElements = !showElements;
+    } else if (keyCode === 73) {
+        showImage = !showImage;
+    }
+    console.log(showPoints+"-"+showElements);
+    return false; // prevent any default behavior
+  }
