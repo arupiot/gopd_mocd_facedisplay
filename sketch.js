@@ -1,53 +1,69 @@
-var eyeImage, noseImage, mouthImage;
+var headImage, eyeImage, noseImage, mouthImage;
 var myCamera;
 var showPoints = false;
 var showElements = true;
 var showImage = false;
+let startSound;
+
+function preload() {
+  soundFormats('mp3', 'ogg');
+  startSound = loadSound('assets/audio/bw_mocd_avatar_tribal_drum_start');
+  startSound.playMode('untilDone');
+}
 
 function setup() {
     // myCamera = loadCamera(windowWidth, windowHeight, false);
-    myCamera = loadCameraWH(windowWidth, windowHeight, true);
-    //camera.hide();
+    // myCamera = loadCameraWH(VIDEO, windowWidth, windowHeight, true);
+    myCamera = loadCameraWH("http://127.0.0.1:5002/cam.mjpg", windowWidth, windowHeight, true);
+    // myCamera = createImg("http://127.0.0.1:5002/cam.mjpg");
+    // myCamera.hide();
     loadTracker();
     //createCanvas(windowWidth, windowHeight);
     loadCanvas(windowWidth, windowHeight);
     
-    eyeImage = loadImage("img/eye.png");
-    noseImage = loadImage("img/nose.png");
-    mouthImage = loadImage("img/mouth.png");
+    headImage = loadImage("assets/img/head2.png");
+    eyeImage = loadImage("assets/img/eye2.png");
+    noseImage = loadImage("assets/img/nose2.png");
+    mouthImage = loadImage("assets/img/mouth2.png");
 }
       
 function draw() {
     getPositions();
     clear();
+    if (showImage == true) image(myCamera,windowWidth/2,windowHeight/2,windowWidth,windowHeight); //myCamera.show();
+    // if (showImage == false) myCamera.hide();
     if (showElements == true) drawElements();
     if (showPoints == true) drawPoints();
-    if (showImage == true) myCamera.show();
-    if (showImage == false) myCamera.hide();
+    
 }
 
 function drawElements() {
     if(positions.length > 0) {
+        // startSound.play();
+
         var p1 = createVector(positions[7][0], positions[7][1] );
         var p2 = createVector(positions[33][0], positions[33][1] );
         
+        var headpos = createVector(positions[33][0],positions[33][1]);
         var eye1pos = createVector(positions[27][0],positions[27][1]);
         var eye2pos = createVector(positions[32][0],positions[32][1]);
         var nosepos = createVector(positions[41][0],positions[41][1]);
         var mouthpos = createVector(positions[57][0],positions[57][1]);    
         
         stroke(255,0,0);
-        line(p1.x,p1.y,p2.x, p2.y);
+        // line(p1.x,p1.y,p2.x, p2.y);
         
         noFill();
         
         stroke(0,255,0);
         ellipse(eye1pos.x,eye1pos.y,10,10);
         ellipse(eye2pos.x, eye2pos.y,10,10);
+        ellipse(mouthpos.x, mouthpos.y,10,10);
         
         stroke(0,0,255);
-        ellipse(nosepos.x, nosepos.y,5,5);
-        ellipse(mouthpos.x, mouthpos.y,5,5);
+        ellipse(nosepos.x, nosepos.y,10,10);
+        ellipse(headpos.x, headpos.y,10,10);
+        
         
         // angle in radians
         var angleRad = Math.atan2(p2.y - p1.y, p2.x - p1.x);
@@ -56,21 +72,28 @@ function drawElements() {
         imageMode(CENTER);
         
         push();
+        translate(headpos.x,headpos.y); 
+        rotate(angleRad + PI/2);
+        image(headImage,0,0,mSize*2,mSize*2);
+        pop();
+
+        push();
         translate(eye1pos.x,eye1pos.y); 
         rotate(angleRad + PI/2);
         image(eyeImage,0,0,mSize/2,mSize/2);
         pop();
         
-        push();
+        push();        
         translate(eye2pos.x,eye2pos.y); 
-        rotate(angleRad + PI/2);
+        scale(-1, 1);
+        rotate(-angleRad -PI/2);
         image(eyeImage,0,0,mSize/2,mSize/2);
         pop();
         
         push();
         translate(mouthpos.x,mouthpos.y); 
         rotate(angleRad + PI/2);
-        image(mouthImage,0,0,mSize,mSize);
+        image(mouthImage,0,0,mSize*2,mSize*2);
         pop();
         
         push();
@@ -99,13 +122,15 @@ function drawPoints() {
 
 
 function keyPressed() {
-    if (keyCode === 80) {
+    if (keyCode === 80) { // P
         showPoints = !showPoints;
-    } else if (keyCode === 69) {
+        console.log(showPoints+"-"+showElements);
+    } else if (keyCode === 69) { // E
         showElements = !showElements;
-    } else if (keyCode === 73) {
+        console.log(showPoints+"-"+showElements);
+    } else if (keyCode === 73) { // I
         showImage = !showImage;
-    }
-    console.log(showPoints+"-"+showElements);
+        console.log(showPoints+"-"+showElements);
+    }    
     return false; // prevent any default behavior
   }

@@ -37,9 +37,9 @@ function loadCamera() {
     mv.muted = true;
 }
 
-function loadCameraWH(w, h, hide) {
+function loadCameraWH(stream, w, h, hide) {
     // setup camera capture
-    videoInput = createCapture(VIDEO);
+    videoInput = createCapture(stream);
     videoInput.size(w, h);
     videoInput.position(0, 0);
     videoInput.id("v");
