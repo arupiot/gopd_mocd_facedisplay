@@ -1,30 +1,66 @@
-var headImage, eyeImage, noseImage, mouthImage;
+/*
+ *   MOCD face display
+ */
+
+/* variables */
+var headImages = new Array("nothing");
+var eyeImages = new Array("nothing");
+var noseImages = new Array("nothing");
+var mouthImages = new Array("noothing"); 
+// var headImage, eyeImage, noseImage, mouthImage;
+var faceIndex = 1;
+var maxIndex = 10;
 var myCamera;
 var showPoints = false;
 var showElements = true;
 var showImage = false;
-let startSound;
+var startSound;
+var fontAstronaut;
 
+/* preload audio and font assets */
 function preload() {
   soundFormats('mp3', 'ogg');
   startSound = loadSound('assets/audio/bw_mocd_avatar_tribal_drum_start');
   startSound.playMode('untilDone');
+  fontAstronaut = loadFont('assets/font/astronaut.ttf');
 }
 
 function setup() {
-    // myCamera = loadCamera(windowWidth, windowHeight, false);
-    // myCamera = loadCameraWH(VIDEO, windowWidth, windowHeight, true);
-    myCamera = loadCameraWH("http://127.0.0.1:5002/cam.mjpg", windowWidth, windowHeight, true);
-    // myCamera = createImg("http://127.0.0.1:5002/cam.mjpg");
+    /* use the following line for a locally connected camera */
+    myCamera = loadCameraWH(VIDEO, windowWidth, windowHeight, true);
+    
+    /* use the following line for an MJPEG video stream */
+    // myCamera = loadCameraWH("http://127.0.0.1:8002/cam.mjpg", windowWidth, windowHeight, true);
+    
     // myCamera.hide();
+
+    /* instantiate the clm fice tracker library */
     loadTracker();
-    //createCanvas(windowWidth, windowHeight);
+
+    /* create canvas */
     loadCanvas(windowWidth, windowHeight);
     
-    headImage = loadImage("assets/img/head2.png");
-    eyeImage = loadImage("assets/img/eye2.png");
-    noseImage = loadImage("assets/img/nose2.png");
-    mouthImage = loadImage("assets/img/mouth2.png");
+    /* load graphic assets */
+    for (let i = 1; i < maxIndex; i++) {
+        headImages.push(loadImage("assets/img/faces/head/head-"+i.toString().padStart(2,"0")+".png"));
+    }
+    for (let i = 1; i < maxIndex; i++) {
+        eyeImages.push(loadImage("assets/img/faces/eye-left/eye-left-"+i.toString().padStart(2,"0")+".png"));
+    }
+    for (let i = 1; i < maxIndex; i++) {
+        noseImages.push(loadImage("assets/img/faces/nose/nose-"+i.toString().padStart(2,"0")+".png"));
+    }
+    for (let i = 1; i < maxIndex; i++) {
+        mouthImages.push(loadImage("assets/img/faces/mouth/mouth-"+i.toString().padStart(2,"0")+".png"));
+    }
+    // headImage = loadImage("assets/img/head2.png");
+    // eyeImage = loadImage("assets/img/eye2.png");
+    // noseImage = loadImage("assets/img/nose2.png");
+    // mouthImage = loadImage("assets/img/mouth2.png");
+
+    textFont(fontAstronaut);
+    textSize(windowHeight / 20);
+    textAlign(CENTER, CENTER);
 }
       
 function draw() {
@@ -34,6 +70,9 @@ function draw() {
     // if (showImage == false) myCamera.hide();
     if (showElements == true) drawElements();
     if (showPoints == true) drawPoints();
+
+    fill(255,255,255);
+    text('"i": image / "p": points / "e" elements / "1-9": face styles', windowWidth/2, windowHeight-windowHeight/20*2);  
     
 }
 
@@ -74,34 +113,36 @@ function drawElements() {
         push();
         translate(headpos.x,headpos.y); 
         rotate(angleRad + PI/2);
-        image(headImage,0,0,mSize*2,mSize*2);
+        image(headImages[faceIndex],0,0,mSize*2,mSize*2);
         pop();
 
         push();
         translate(eye1pos.x,eye1pos.y); 
         rotate(angleRad + PI/2);
-        image(eyeImage,0,0,mSize/2,mSize/2);
+        image(eyeImages[faceIndex],0,0,mSize/2,mSize/2);
         pop();
         
         push();        
         translate(eye2pos.x,eye2pos.y); 
         scale(-1, 1);
         rotate(-angleRad -PI/2);
-        image(eyeImage,0,0,mSize/2,mSize/2);
+        image(eyeImages[faceIndex],0,0,mSize/2,mSize/2);
         pop();
         
         push();
         translate(mouthpos.x,mouthpos.y); 
         rotate(angleRad + PI/2);
-        image(mouthImage,0,0,mSize*2,mSize*2);
+        image(mouthImages[faceIndex],0,0,mSize*2,mSize*2);
         pop();
         
         push();
         translate(nosepos.x,nosepos.y+10); 
         rotate(angleRad + PI/2);
-        image(noseImage,0,0,mSize,mSize);
+        image(noseImages[faceIndex],0,0,mSize,mSize);
         pop();    
     }
+
+    
 }
 
 function drawPoints() {
@@ -131,6 +172,24 @@ function keyPressed() {
     } else if (keyCode === 73) { // I
         showImage = !showImage;
         console.log(showPoints+"-"+showElements);
+    } else if (keyCode === 49) { // 1
+        faceIndex = 1;
+    } else if (keyCode === 50) { // 2
+        faceIndex = 2;
+    } else if (keyCode === 51) { // 3
+        faceIndex = 3;
+    } else if (keyCode === 52) { // 4
+        faceIndex = 4;
+    } else if (keyCode === 53) { // 5
+        faceIndex = 5;
+    } else if (keyCode === 54) { // 6
+        faceIndex = 6;
+    } else if (keyCode === 55) { // 7
+        faceIndex = 7;
+    } else if (keyCode === 56) { // 8
+        faceIndex = 8;
+    } else if (keyCode === 57) { // 9
+        faceIndex = 9;
     }    
     return false; // prevent any default behavior
   }
