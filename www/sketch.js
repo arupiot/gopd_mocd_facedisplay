@@ -7,7 +7,7 @@ var headImages = new Array("nothing");
 var eyeImages = new Array("nothing");
 var noseImages = new Array("nothing");
 var mouthImages = new Array("noothing"); 
-var headImage, eyeImage, noseImage, mouthImage, eyebrowImage, lipBottomImage, lipTopImage;
+var headImage, earsImage, eyeImage, noseImage, mouthImage, eyebrowImage, lipBottomImage, lipTopImage;
 var faceIndex = 1;
 var maxIndex = 10;
 var myCamera;
@@ -55,6 +55,7 @@ function setup() {
     }
 
     headImage = loadImage("assets/img/faces/head/head.png");
+    earsImage = loadImage("assets/img/faces/ears/ears.png");
     eyeImage = loadImage("assets/img/faces/eye/eye.png");
     noseImage = loadImage("assets/img/faces/nose/nose.png");
     mouthImage = loadImage("assets/img/faces/mouth/mouth.png");
@@ -89,10 +90,11 @@ function drawElements() {
         var p2 = createVector(positions[33][0], positions[33][1] );
         
         var headpos = createVector(positions[33][0],positions[33][1]);
+        var earspos = createVector(positions[62][0],positions[62][1]);
         var eye1pos = createVector(positions[27][0],positions[27][1]);
         var eye2pos = createVector(positions[32][0],positions[32][1]);
         var nosepos = createVector(positions[41][0],positions[41][1]);
-        var mouthpos = createVector(positions[57][0],positions[57][1]);   
+        // var mouthpos = createVector(positions[57][0],positions[57][1]);   
         var eyebrow1pos = createVector(positions[21][0],positions[21][1]);
         var eyebrow2pos = createVector(positions[17][0],positions[17][1]);
         var liptoppos = createVector(positions[47][0],positions[47][1]);
@@ -124,6 +126,13 @@ function drawElements() {
         rotate(angleRad + PI/2);
         // image(headImages[faceIndex],0,0,mSize/2,mSize/2);
         image(headImage,0,0,mSize/1,mSize/1);
+        pop();
+
+        push();
+        translate(earspos.x,earspos.y); 
+        rotate(angleRad + PI/2);
+        // image(headImages[faceIndex],0,0,mSize/2,mSize/2);
+        image(earsImage,0,0,mSize/1,mSize/1);
         pop();
 
         push();
@@ -166,7 +175,7 @@ function drawElements() {
         translate(liptoppos.x,liptoppos.y); 
         rotate(angleRad + PI/2);
         // image(lipTopImages[faceIndex],0,0,mSize/2,mSize/2);
-        image(lipTopImage,0,0,mSize/2,mSize/2);
+        image(lipTopImage,0,0,mSize/1,mSize/1);
         pop();
 
         push();
@@ -183,7 +192,6 @@ function drawElements() {
         image(noseImage,0,0,mSize/1,mSize/1);
         pop();    
     }
-
     
 }
 
