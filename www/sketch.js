@@ -7,7 +7,7 @@ var headImages = new Array("nothing");
 var eyeImages = new Array("nothing");
 var noseImages = new Array("nothing");
 var mouthImages = new Array("noothing"); 
-// var headImage, eyeImage, noseImage, mouthImage;
+var headImage, eyeImage, noseImage, mouthImage, eyebrowImage, lipBottomImage, lipTopImage;
 var faceIndex = 1;
 var maxIndex = 10;
 var myCamera;
@@ -53,10 +53,14 @@ function setup() {
     for (let i = 1; i < maxIndex; i++) {
         mouthImages.push(loadImage("assets/img/faces/mouth/mouth-"+i.toString().padStart(2,"0")+".png"));
     }
-    // headImage = loadImage("assets/img/head2.png");
-    // eyeImage = loadImage("assets/img/eye2.png");
-    // noseImage = loadImage("assets/img/nose2.png");
-    // mouthImage = loadImage("assets/img/mouth2.png");
+
+    headImage = loadImage("assets/img/faces/head/head.png");
+    eyeImage = loadImage("assets/img/faces/eye/eye.png");
+    noseImage = loadImage("assets/img/faces/nose/nose.png");
+    mouthImage = loadImage("assets/img/faces/mouth/mouth.png");
+    eyebrowImage = loadImage("assets/img/faces/eyebrow/eyebrow.png");
+    lipBottomImage = loadImage("assets/img/faces/bottom-lip/bottom-lip.png"); 
+    lipTopImage = loadImage("assets/img/faces/top-lip/top-lip.png");
 
     textFont(fontAstronaut);
     textSize(windowHeight / 20);
@@ -72,7 +76,8 @@ function draw() {
     if (showPoints == true) drawPoints();
 
     fill(255,255,255);
-    text('"i": image / "p": points / "e" elements / "1-9": face styles', windowWidth/2, windowHeight-windowHeight/20*2);  
+    // text('"i": image / "p": points / "e" elements / "1-9": face styles', windowWidth/2, windowHeight-windowHeight/20*2);  
+    text('"i": image / "p": points / "e" elements', windowWidth/2, windowHeight-windowHeight/20*2);  
     
 }
 
@@ -87,21 +92,25 @@ function drawElements() {
         var eye1pos = createVector(positions[27][0],positions[27][1]);
         var eye2pos = createVector(positions[32][0],positions[32][1]);
         var nosepos = createVector(positions[41][0],positions[41][1]);
-        var mouthpos = createVector(positions[57][0],positions[57][1]);    
+        var mouthpos = createVector(positions[57][0],positions[57][1]);   
+        var eyebrow1pos = createVector(positions[21][0],positions[21][1]);
+        var eyebrow2pos = createVector(positions[17][0],positions[17][1]);
+        var liptoppos = createVector(positions[47][0],positions[47][1]);
+        var lipbottompos = createVector(positions[53][0],positions[53][1]);
         
         stroke(255,0,0);
         // line(p1.x,p1.y,p2.x, p2.y);
         
         noFill();
         
-        stroke(0,255,0);
-        ellipse(eye1pos.x,eye1pos.y,10,10);
-        ellipse(eye2pos.x, eye2pos.y,10,10);
-        ellipse(mouthpos.x, mouthpos.y,10,10);
+        // stroke(0,255,0);
+        // ellipse(eye1pos.x,eye1pos.y,10,10);
+        // ellipse(eye2pos.x, eye2pos.y,10,10);
+        // ellipse(mouthpos.x, mouthpos.y,10,10);
         
-        stroke(0,0,255);
-        ellipse(nosepos.x, nosepos.y,10,10);
-        ellipse(headpos.x, headpos.y,10,10);
+        // stroke(0,0,255);
+        // ellipse(nosepos.x, nosepos.y,10,10);
+        // ellipse(headpos.x, headpos.y,10,10);
         
         
         // angle in radians
@@ -113,32 +122,65 @@ function drawElements() {
         push();
         translate(headpos.x,headpos.y); 
         rotate(angleRad + PI/2);
-        image(headImages[faceIndex],0,0,mSize*2,mSize*2);
+        // image(headImages[faceIndex],0,0,mSize/2,mSize/2);
+        image(headImage,0,0,mSize/1,mSize/1);
         pop();
 
         push();
         translate(eye1pos.x,eye1pos.y); 
         rotate(angleRad + PI/2);
-        image(eyeImages[faceIndex],0,0,mSize/2,mSize/2);
+        // image(eyeImages[faceIndex],0,0,mSize/2,mSize/2);
+        image(eyeImage,0,0,mSize/1,mSize/1);
         pop();
         
         push();        
         translate(eye2pos.x,eye2pos.y); 
         scale(-1, 1);
         rotate(-angleRad -PI/2);
-        image(eyeImages[faceIndex],0,0,mSize/2,mSize/2);
+        // image(eyeImages[faceIndex],0,0,mSize/2,mSize/2);
+        image(eyeImage,0,0,mSize/1,mSize/1);
+        pop();
+
+        push();
+        translate(eyebrow1pos.x,eyebrow1pos.y); 
+        rotate(angleRad + PI/2);
+        // image(eyebrowImages[faceIndex],0,0,mSize/2,mSize/2);
+        image(eyebrowImage,0,0,mSize/1,mSize/1);
         pop();
         
+        push();        
+        translate(eyebrow2pos.x,eyebrow2pos.y); 
+        scale(-1, 1);
+        rotate(-angleRad -PI/2);
+        // image(eyebrowImages[faceIndex],0,0,mSize/2,mSize/2);
+        image(eyebrowImage,0,0,mSize/1,mSize/1);
+        pop();
+        
+        // push();
+        // translate(mouthpos.x,mouthpos.y); 
+        // rotate(angleRad + PI/2);
+        // image(mouthImages[faceIndex],0,0,mSize*2,mSize*2);
+        // pop();
+
         push();
-        translate(mouthpos.x,mouthpos.y); 
+        translate(liptoppos.x,liptoppos.y); 
         rotate(angleRad + PI/2);
-        image(mouthImages[faceIndex],0,0,mSize*2,mSize*2);
+        // image(lipTopImages[faceIndex],0,0,mSize/2,mSize/2);
+        image(lipTopImage,0,0,mSize/2,mSize/2);
+        pop();
+
+        push();
+        translate(lipbottompos.x,lipbottompos.y); 
+        rotate(angleRad + PI/2);
+        // image(lipBottomImages[faceIndex],0,0,mSize/2,mSize/2);
+        image(lipBottomImage,0,0,mSize/1,mSize/1);
         pop();
         
         push();
         translate(nosepos.x,nosepos.y+10); 
         rotate(angleRad + PI/2);
-        image(noseImages[faceIndex],0,0,mSize,mSize);
+        // image(noseImages[faceIndex],0,0,mSize,mSize);
+        image(noseImage,0,0,mSize/1,mSize/1);
         pop();    
     }
 
