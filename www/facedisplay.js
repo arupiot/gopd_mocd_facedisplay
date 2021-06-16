@@ -14,8 +14,12 @@ var myCamera;
 var showPoints = false;
 var showElements = true;
 var showImage = false;
+var showMesh = false;
 var startSound;
 var fontAstronaut;
+
+var facemesh;
+var predictions = [];
 
 /* preload audio and font assets */
 function preload() {
@@ -23,6 +27,10 @@ function preload() {
   startSound = loadSound('assets/audio/bw_mocd_avatar_tribal_drum_start');
   startSound.playMode('untilDone');
   fontAstronaut = loadFont('assets/font/astronaut.ttf');
+}
+
+function modelReady() {
+    console.log("FaceMesh model ready");
 }
 
 function setup() {
@@ -36,6 +44,14 @@ function setup() {
 
     /* instantiate the clm fice tracker library */
     loadTracker();
+
+    /* instantiate the facemesh tracker library */
+    facemesh = ml5.facemesh(myCamera, modelReady);
+
+    /* set up an event that fills the global variable "predictions" with an array every time new predictions are made */
+    facemesh.on("predict", results => {
+        predictions = results;
+    });
 
     /* create canvas */
     loadCanvas(windowWidth, windowHeight);
@@ -75,11 +91,39 @@ function draw() {
     // if (showImage == false) myCamera.hide();
     if (showElements == true) drawElements();
     if (showPoints == true) drawPoints();
+    if (showMesh == true) drawFaceMeshPoints();
 
     fill(255,255,255);
     // text('"i": image / "p": points / "e" elements / "1-9": face styles', windowWidth/2, windowHeight-windowHeight/20*2);  
-    text('"i": image / "p": points / "e" elements', windowWidth/2, windowHeight-windowHeight/20*2);  
+    text('"i": image / "p": points / "e" elements / "m": mesh', windowWidth/2, windowHeight-windowHeight/20*2);  
     
+}
+
+// a function to draw ellipses over the detected keypoints
+function drawFaceMeshPoints() {
+    for (let i = 0; i < predictions.length; i += 1) {
+      // const keypoints = predictions[i].scaledMesh;
+      const keypoints = predictions[i].scaledMesh;
+      const boundingBox = predictions[i].boundingBox;
+      console.log(boundingBox);
+
+      noFill();
+      stroke(255, 255, 255)
+
+      // draw the bounding box
+      const [x1, y1] = boundingBox.topLeft[0];
+      const [x2, y2] = boundingBox.bottomRight[0];
+      rect(x1, y1, x2-x1, y2-y1);
+  
+      fill(255, 255, 255);
+      // draw facial keypoints.
+      for (let j = 0; j < keypoints.length; j += 1) {
+        const [x, y] = keypoints[j];
+        // console.log(keypoints[j]);
+  
+        ellipse(x, y, 5, 5);
+      }
+    }
 }
 
 function drawElements() {
@@ -215,14 +259,13 @@ function drawPoints() {
 function keyPressed() {
     if (keyCode === 80) { // P
         showPoints = !showPoints;
-        console.log(showPoints+"-"+showElements);
     } else if (keyCode === 69) { // E
         showElements = !showElements;
-        console.log(showPoints+"-"+showElements);
     } else if (keyCode === 73) { // I
         showImage = !showImage;
-        console.log(showPoints+"-"+showElements);
-    } else if (keyCode === 49) { // 1
+    } else if (keyCode === 77) { // M
+        showMesh = !showMesh;
+    }  else if (keyCode === 49) { // 1
         faceIndex = 1;
     } else if (keyCode === 50) { // 2
         faceIndex = 2;
