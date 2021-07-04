@@ -21,6 +21,10 @@ function loadCanvas(w, h) {
     canvas.position(0,0);
 }
 
+function getCanvas() {
+    return canvas;
+}
+
 /*
 
 Load the capture device, align under the canvas & mute it to avoid audiofeedback
@@ -40,6 +44,19 @@ function loadCamera() {
 function loadCameraWH(stream, w, h, hide) {
     // setup camera capture
     videoInput = createCapture(stream);
+    videoInput.size(w, h);
+    videoInput.position(0, 0);
+    videoInput.id("v");
+    var mv = document.getElementById("v");
+    mv.muted = true;
+    if (hide == true) videoInput.hide();
+    return(videoInput);
+}
+
+function loadCameraMJPEGWH(stream, w, h, hide) {
+    // setup camera capture
+    videoInput = createImg(stream, "MJPEG video stream");
+    // videoInput = createCapture(stream);
     videoInput.size(w, h);
     videoInput.position(0, 0);
     videoInput.id("v");
