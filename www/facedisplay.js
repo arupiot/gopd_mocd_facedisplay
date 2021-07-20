@@ -52,7 +52,8 @@ function modelReady() {
 function centerCanvas() {
     var x = (windowWidth - width) / 2;
     // var y = (windowHeight - height) / 2;
-    var y = 3 * (windowHeight - height) / 4;
+    //var y = 3 * (windowHeight - height) / 4;
+    var y = windowHeight - height;
     cnv.position(x, y);
 }
 
@@ -68,6 +69,7 @@ function setup() {
     /* use the following line for an MJPEG video stream */
     // myCamera = loadCameraMJPEGWH("http://127.0.0.1:8002/cam.mjpg", windowWidth, windowHeight, true);
     // myCamera = loadCameraMJPEGWH("http://127.0.0.1:8080", 640, 480, true);
+    // myCamera = loadCameraMJPEGWH("http://localhost:8080/video.mjpg", 640, 480, true);
     
     // myCamera.hide();
 
@@ -78,7 +80,16 @@ function setup() {
 
     if (useFaceMesh) {
         /* instantiate the facemesh tracker library */
-        facemesh = ml5.facemesh(myCamera, modelReady);
+        const faceOptions = {
+            flipHorizontal: false, // boolean value for if the video should be flipped, defaults to false
+            maxContinuousChecks: 5, // How many frames to go without running the bounding box detector. Only relevant if maxFaces > 1. Defaults to 5.
+            detectionConfidence: 0.90, // Threshold for discarding a prediction. Defaults to 0.9.
+            maxFaces: 10, // The maximum number of faces detected in the input. Should be set to the minimum number for performance. Defaults to 10.
+            scoreThreshold: 0.75, // A threshold for removing multiple (likely duplicate) detections based on a "non-maximum suppression" algorithm. Defaults to 0.75.
+            iouThreshold: 0.30, // A float representing the threshold for deciding whether boxes overlap too much in non-maximum suppression. Must be between [0, 1]. Defaults to 0.3.
+        };
+        facemesh = ml5.facemesh(myCamera, faceOptions, modelReady);
+        // facemesh = ml5.facemesh(myCamera, modelReady);
         /* set up an event that fills the global variable "predictions" with an array every time new predictions are made */
         facemesh.on("predict", results => {
             predictions = results;
@@ -118,7 +129,7 @@ function setup() {
     // lipTopImage = loadImage("assets/img/faces/top-lip/top-lip.png");
 
     textFont(fontAstronaut);
-    textSize(windowHeight / 30);
+    textSize(windowHeight / 40);
     textAlign(CENTER, CENTER);
     
     // var mv = document.getElementById("v");
@@ -197,10 +208,14 @@ function drawFaceMeshPoints() {
 }
 
 function drawFaceMeshFeatures() {
+    // console.log(predictions.length);
     for (let i = 0; i < predictions.length; i += 1) {
         const keypoints = predictions[i].scaledMesh;
+        // console.log(keypoints);
 
         const annotations = predictions[i].annotations;
+
+        // console.log(annotations);
         
         const silhouette = annotations.silhouette; // polygon
         drawFeatureLine(silhouette, true);
@@ -300,28 +315,34 @@ function drawFaceMeshFeatures() {
             // console.log("size: " + mSize);
 
             // head
-            drawFeatureElement(keypoints[10], false, angleRad, mSize, headImages[faceIndex]);
+            drawFeatureElement(keypoints[164], false, 3.1415-angleRad, mSize, headImages[faceIndex]);
 
             // left ear
             drawFeatureElement(keypoints[234], false, angleRad, mSize, earImages[faceIndex]);
 
             // right ear
-            drawFeatureElement(keypoints[454], true, angleRad, mSize, earImages[faceIndex]);
+            drawFeatureElement(keypoints[454], true, 3.1415-angleRad, mSize, earImages[faceIndex]);
 
             // left eye
             drawFeatureElement(keypoints[159], false, angleRad, mSize, eyeImages[faceIndex]);
 
             // right eye
-            drawFeatureElement(keypoints[386], true, angleRad, mSize, eyeImages[faceIndex]);
+            drawFeatureElement(keypoints[386], true, 3.1415-angleRad, mSize, eyeImages[faceIndex]);
+
+            // left eyebrow
+            drawFeatureElement(keypoints[223], false, angleRad, mSize, eyebrowImages[faceIndex]);
+
+            // right eyebrow
+            drawFeatureElement(keypoints[443], true, 3.1415-angleRad, mSize, eyebrowImages[faceIndex]);
 
             // upper lip
-            drawFeatureElement(keypoints[11], false, angleRad, mSize, lipTopImages[faceIndex]);
+            drawFeatureElement(keypoints[11], false, 3.1415-angleRad, mSize, lipTopImages[faceIndex]);
 
             // bottom lip
             drawFeatureElement(keypoints[16], true, angleRad, mSize, lipBottomImages[faceIndex]);
 
             // nose
-            drawFeatureElement(noseTip[0], false, angleRad, mSize*.7, noseImages[faceIndex]);
+            drawFeatureElement(noseTip[0], false, 3.1415-angleRad, mSize, noseImages[faceIndex]);
 
         }
         
