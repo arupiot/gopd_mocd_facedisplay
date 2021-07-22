@@ -315,7 +315,7 @@ function drawFaceMeshFeatures() {
             // console.log("size: " + mSize);
 
             // head
-            drawFeatureElement(keypoints[164], false, 3.1415-angleRad, mSize, headImages[faceIndex]);
+            drawFeatureElement(keypoints[10], false, 3.1415-angleRad, mSize, headImages[faceIndex]);
 
             // left ear
             drawFeatureElement(keypoints[234], false, angleRad, mSize, earImages[faceIndex]);
