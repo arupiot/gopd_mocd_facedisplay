@@ -36,12 +36,15 @@ var cnv;
 /* face detection */
 var facemesh; // FaceMesh
 var predictions = []; // CLM
+var faceCodes = [];
+var faceCount = 0;
+var facePrevFrame = false;
 
 /* preload audio and font assets */
 function preload() {
-  soundFormats('mp3', 'ogg');
-  startSound = loadSound('assets/audio/bw_mocd_avatar_tribal_drum_start');
-  startSound.playMode('untilDone');
+//   soundFormats('mp3', 'ogg');
+//   startSound = loadSound('assets/audio/bw_mocd_avatar_tribal_drum_start');
+//   startSound.playMode('untilDone');
   fontAstronaut = loadFont('assets/font/astronaut.ttf');
 }
 
@@ -158,15 +161,35 @@ function draw() {
         if (showPoints == true) drawPoints();
     }
     if (useFaceMesh) {
+        
+        // create new face codes if needed
+        if ((predictions.length>0) && facePrevFrame==false) {
+            // new face detected
+            facePrevFrame = true;
+            faceCount = faceCount + predictions.length;
+            for (let i = 0; i < predictions.length; i += 1) {
+                var faceCode = Math.floor(Math.random() * 999999999).toString().padStart(9,"0");
+                faceCodes.push(faceCode);
+                console.log(faceCode);
+            }
+        } else if (predictions.length==0) {
+            // no face detected
+            facePrevFrame = false;
+        }
         drawFaceMeshPoints();
+
     }
     if (showHelp) {
         colorMode(RGB);
         fill(255,255,255);
-        text('"i": image / "e" elements / "m": mesh / "0-9": face styles', myCamera.width/2, myCamera.height-myCamera.height/20*2);  
+        text('total number of faces: ' + faceCount, myCamera.width/2, myCamera.height-myCamera.height/20*4);
+        text('current number of faces: ' + predictions.length, myCamera.width/2, myCamera.height-myCamera.height/20*3);
+        text('"i": image / "e" elements / "m": mesh', myCamera.width/2, myCamera.height-myCamera.height/20*2);  
+        // text('"i": image / "e" elements / "m": mesh / "0-9": face styles', myCamera.width/2, myCamera.height-myCamera.height/20*2);  
         // text('"i": image / "p": points / "e" elements / "m": mesh', myCamera.width/2, myCamera.height-myCamera.height/20*2);  
         // text('"i": image / "p": points / "e" elements / "m": mesh', myCamera.width/2, myCamera.height-myCamera.height/20*2);  
     }
+
 }
 
 // a function to draw ellipses over the detected keypoints
@@ -314,35 +337,77 @@ function drawFaceMeshFeatures() {
             // console.log("angle: " + angleRad);
             // console.log("size: " + mSize);
 
+            var code = faceCodes[faceCodes.length-1-i];
+            // console.log(code);
             // head
-            drawFeatureElement(keypoints[10], false, 3.1415-angleRad, mSize, headImages[faceIndex]);
+            // drawFeatureElement(keypoints[8], false, 3.1415-angleRad, mSize*1.4, headImages[faceIndex]);
+            var index = parseInt(code.substr(0,1));
+            if (index==0) index = 10;
+            // console.log(index);
+            drawFeatureElement(keypoints[8], false, 3.1415-angleRad, mSize*1.4, headImages[index]);
 
             // left ear
-            drawFeatureElement(keypoints[234], false, angleRad, mSize, earImages[faceIndex]);
+            // drawFeatureElement(keypoints[234], false, angleRad, mSize, earImages[faceIndex]);
+            var index = parseInt(code.substr(1,1));
+            if (index==0) index = 10;
+            // console.log(index);
+            drawFeatureElement(keypoints[234], false, angleRad, mSize, earImages[index]);
 
             // right ear
-            drawFeatureElement(keypoints[454], true, 3.1415-angleRad, mSize, earImages[faceIndex]);
+            // drawFeatureElement(keypoints[454], true, 3.1415-angleRad, mSize, earImages[faceIndex]);
+            var index = parseInt(code.substr(1,1));
+            if (index==0) index = 10;
+            // console.log(index);
+            drawFeatureElement(keypoints[454], true, 3.1415-angleRad, mSize, earImages[index]);
 
             // left eye
-            drawFeatureElement(keypoints[159], false, angleRad, mSize, eyeImages[faceIndex]);
+            // drawFeatureElement(keypoints[159], false, angleRad, mSize, eyeImages[faceIndex]);
+            var index = parseInt(code.substr(2,1));
+            if (index==0) index = 10;
+            // console.log(index);
+            drawFeatureElement(keypoints[159], false, angleRad, mSize, eyeImages[index]);
 
             // right eye
-            drawFeatureElement(keypoints[386], true, 3.1415-angleRad, mSize, eyeImages[faceIndex]);
+            // drawFeatureElement(keypoints[386], true, 3.1415-angleRad, mSize, eyeImages[faceIndex]);
+            var index = parseInt(code.substr(2,1));
+            if (index==0) index = 10;
+            // console.log(index);
+            drawFeatureElement(keypoints[386], true, 3.1415-angleRad, mSize, eyeImages[index]);
 
             // left eyebrow
-            drawFeatureElement(keypoints[223], false, angleRad, mSize, eyebrowImages[faceIndex]);
+            // drawFeatureElement(keypoints[223], false, angleRad, mSize, eyebrowImages[faceIndex]);
+            var index = parseInt(code.substr(3,1));
+            if (index==0) index = 10;
+            // console.log(index);
+            drawFeatureElement(keypoints[223], false, angleRad, mSize, eyebrowImages[index]);
 
             // right eyebrow
-            drawFeatureElement(keypoints[443], true, 3.1415-angleRad, mSize, eyebrowImages[faceIndex]);
+            // drawFeatureElement(keypoints[443], true, 3.1415-angleRad, mSize, eyebrowImages[faceIndex]);
+            var index = parseInt(code.substr(3,1));
+            if (index==0) index = 10;
+            // console.log(index);
+            drawFeatureElement(keypoints[443], true, 3.1415-angleRad, mSize, eyebrowImages[index]);
 
             // upper lip
-            drawFeatureElement(keypoints[11], false, 3.1415-angleRad, mSize, lipTopImages[faceIndex]);
+            // drawFeatureElement(keypoints[11], false, 3.1415-angleRad, mSize, lipTopImages[faceIndex]);
+            var index = parseInt(code.substr(4,1));
+            if (index==0) index = 10;
+            // console.log(index);
+            drawFeatureElement(keypoints[12], false, 3.1415-angleRad, mSize, lipTopImages[index]);
 
             // bottom lip
-            drawFeatureElement(keypoints[16], true, angleRad, mSize, lipBottomImages[faceIndex]);
+            // drawFeatureElement(keypoints[16], true, angleRad, mSize, lipBottomImages[faceIndex]);
+            var index = parseInt(code.substr(5,1));
+            if (index==0) index = 10;
+            // console.log(index);
+            drawFeatureElement(keypoints[15], true, angleRad, mSize, lipBottomImages[index]);
 
             // nose
-            drawFeatureElement(noseTip[0], false, 3.1415-angleRad, mSize, noseImages[faceIndex]);
+            // drawFeatureElement(noseTip[0], false, 3.1415-angleRad, mSize, noseImages[faceIndex]);
+            var index = parseInt(code.substr(6,1));
+            if (index==0) index = 10;
+            // console.log(index);
+            drawFeatureElement(noseTip[0], false, 3.1415-angleRad, mSize, noseImages[index]);
 
         }
         
